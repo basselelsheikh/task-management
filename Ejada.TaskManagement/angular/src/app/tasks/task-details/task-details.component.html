@@ -1,0 +1,31 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title">{{ task.name }}</h5>
+  </div>
+  <div class="card-body">
+    <p class="card-text"><strong>{{ '::Description' | abpLocalization }}:</strong> {{ task.description }}</p>
+    <p class="card-text"><strong>{{ '::DueDate'| abpLocalization }}:</strong> {{ task.dueDate | date}}</p>
+    <p class="card-text"><strong>{{ '::Priority'| abpLocalization }}:</strong> {{ '::Enum:TaskPriority.' + task.priority |
+      abpLocalization }}</p>
+    <p class="card-text"><strong>{{ '::Status'| abpLocalization }}:</strong>
+      {{ '::Enum:TaskStatus.' + task.status | abpLocalization }}
+    </p>
+    <p class="card-text"><strong>{{ '::Creator'| abpLocalization }}:</strong> {{ task.creatorUserName }}</p>
+    <p class="card-text"><strong>{{ '::Assignee'| abpLocalization }}:</strong> {{ task.assigneeUserName }}</p>
+    <button
+      *ngIf="this.task.status === TaskStatus.Pending && this.permissionService.getGrantedPolicy('TaskManagement.Tasks.StartTask')"
+       class="btn btn-primary" type="button" (click)="startTask()">
+      <span>{{ "::StartTask" | abpLocalization }}</span>
+    </button>
+    <button
+      *ngIf="this.task.status === TaskStatus.InProgress && this.permissionService.getGrantedPolicy('TaskManagement.Tasks.FinishTask')"
+       class="btn btn-primary" type="button" (click)="finishTask()">
+      <span>{{ "::FinishTask" | abpLocalization }}</span>
+    </button>
+    <button
+       class="btn btn-primary" type="button" (click)="downloadAttachment()">
+      <span>{{ "::Download" | abpLocalization }}</span>
+    </button>
+  </div>
+</div>
+

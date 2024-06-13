@@ -1,0 +1,27 @@
+{
+  "culture": "ar",
+  "texts": {
+    "Menu:Home": "الصفحة الرئيسية",
+    "Menu:Tasks": "المهام",
+    "Welcome": "مرحباً",
+    "TaskManagement:010001": "لا يمكن أن يكون تاريخ استحقاق المهمة في الماضي",
+    "Name": "الاسم",
+    "Priority": "أولوية",
+    "Status": "حالة",
+    "Assignee": "المُكَلَّف",
+    "Creator": "منشئ المهمة",
+    "Description": "وصف المهمة",
+    "DueDate": "تاريخ الاستحقاق",
+    "Enum:TaskPriority.0": "منخفض",
+    "Enum:TaskPriority.1": "متوسط",
+    "Enum:TaskPriority.2": "عالي",
+    "Enum:TaskStatus.0": "قيد الانتظار",
+    "Enum:TaskStatus.1": "قيد التنفيذ",
+    "Enum:TaskStatus.2": "مكتمل",
+    "Permission:TaskManagement": "ادارة المهام",
+    "StartTask": "بدء المهمة",
+    "FinishTask": "إنهاء المهمة",
+    "Confirmation:StartTask": "هل أنت متأكد أنك تريد بدء هذه المهمة؟",
+    "Confirmation:FinishTask": "هل أنت متأكد أنك تريد إنهاء هذه المهمة؟"
+  }
+}

@@ -1,0 +1,47 @@
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col col-md-6">
+                <h5 class="card-title">{{ '::Menu:Tasks' | abpLocalization }}</h5>
+            </div>
+            <div class="text-end col col-md-6">
+                <div class="text-lg-end pt-2">
+                    <!-- check id -->
+                    <button *abpPermission="'TaskManagement.Tasks.Create'" id="create" class="btn btn-primary"
+                        type="button" (click)="createTask()">
+                        <i class="fa fa-plus me-1"></i>
+                        <span>{{ "::CreateTask" | abpLocalization }}</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-body">
+        <ngx-datatable [rows]="tasks.items" [count]="tasks.totalCount" [list]="list" default>
+            <ngx-datatable-column [name]="'::Name' | abpLocalization" prop="name">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    <a [routerLink]="[row.id]">{{ row.name }}</a>
+                  </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::DueDate' | abpLocalization" prop="duedate">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ row.dueDate | date }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Priority' | abpLocalization" prop="priority">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ '::Enum:TaskPriority.' + row.priority | abpLocalization }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Status' | abpLocalization" prop="status">
+                <ng-template let-row="row" ngx-datatable-cell-template>
+                    {{ '::Enum:TaskStatus.' + row.status | abpLocalization }}
+                </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column [name]="'::Creator' | abpLocalization" prop="creatorUserName" [sortable]="false">
+            </ngx-datatable-column>
+            <ngx-datatable-column  *abpPermission="'TaskManagement.Tasks.ViewAll'" [name]="'::Assignee' | abpLocalization" prop="">
+            </ngx-datatable-column>
+        </ngx-datatable>
+    </div>
+</div>

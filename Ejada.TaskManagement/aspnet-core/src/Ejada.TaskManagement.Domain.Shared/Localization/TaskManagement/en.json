@@ -1,0 +1,26 @@
+{
+  "culture": "en",
+  "texts": {
+    "Menu:Tasks": "Tasks",
+    "Welcome": "Welcome",
+    "TaskManagement:010001": "Task due date cannot be in the past",
+    "Name": "Name",
+    "Priority": "Priority",
+    "Status": "Status",
+    "Assignee": "Assignee",
+    "Creator": "Task Creator",
+    "Description": "Description",
+    "DueDate": "Due Date",
+    "Enum:TaskPriority.0": "Low",
+    "Enum:TaskPriority.1": "Medium",
+    "Enum:TaskPriority.2": "High",
+    "Enum:TaskStatus.0": "Pending",
+    "Enum:TaskStatus.1": "In Progress",
+    "Enum:TaskStatus.2": "Completed",
+    "Permission:TaskManagement": "Task management",
+    "StartTask": "Start Task",
+    "FinishTask": "Finish Task",
+    "Confirmation:StartTask": "Are you sure you want to start this task?",
+    "Confirmation:FinishTask": "Are you sure you want to finish this task?"
+  }
+}
