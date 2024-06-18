@@ -34,8 +34,6 @@ export class TaskDetailsComponent implements OnInit {
 
   }
 
-
-
   startTask() {
     this.confirmation
       .warn('::Confirmation:StartTask', '')
@@ -65,15 +63,15 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   downloadAttachment() {
-    this.taskService.getAttachmentsById(this.task.id).subscribe( response => {
+    this.taskService.getAttachmentsById(this.task.id).subscribe(response => {
       const blob = response;
       const byteCharacters = atob(blob.content);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-        const byteArray = new Uint8Array(byteNumbers);
-      saveAs(new Blob([byteArray], { type: 'application/octet-stream' }), "Projects.docx");
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      saveAs(new Blob([byteArray], { type: 'application/octet-stream' }), blob.fileName);
     })
   }
 }

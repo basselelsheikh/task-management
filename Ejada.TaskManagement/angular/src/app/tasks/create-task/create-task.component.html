@@ -1,0 +1,64 @@
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title">{{ '::CreateTask' | abpLocalization }}</h5>
+    </div>
+    <div class="card-body">
+        <form [formGroup]="form" (ngSubmit)="save()">
+            <div>
+                <label for="task-name" class="mb-1">{{ '::Name' | abpLocalization }}</label><span> * </span>
+                <input type="text" id="task-name" class="form-control" formControlName="name" autofocus />
+            </div>
+
+            <div class="mt-3">
+                <label for="task-description" class="mb-1">{{ '::Description' | abpLocalization }}</label>
+                <textarea class="form-control" id="task-description" formControlName="description"></textarea>
+            </div>
+
+            <div class="mt-3">
+                <label for="task-priority" class="mb-1">{{ '::Priority' | abpLocalization }}</label><span> * </span>
+                <select class="form-control" id="task-priority" formControlName="priority">
+                    <option [ngValue]="p.value" *ngFor="let p of taskPriorities">{{ '::Enum:TaskPriority.' + p.value |
+                        abpLocalization }}</option>
+                </select>
+            </div>
+
+            <div class="mt-3">
+                <label class="mb-1">{{ '::DueDate' | abpLocalization }}</label><span> * </span>
+                <input #datepicker="ngbDatepicker" class="form-control" name="datepicker" formControlName="dueDate"
+                    ngbDatepicker (click)="datepicker.toggle()" [minDate]="today" [readonly]="true" />
+            </div>
+
+            <div class="mt-3">
+                <label for="task-employee" class="mb-1">{{ '::AssignTo' | abpLocalization }}</label>
+                <select class="form-control" id="task-employee" formControlName="employeeId">
+                    <option selected [ngValue]="null">{{ '::AssignEmployeeLater' | abpLocalization }}</option>
+                    <option [ngValue]="e.id" *ngFor="let e of employees">{{ e.name }}</option>
+                </select>
+            </div>
+
+            <div class="mt-3">
+                <label for="task-attachments" class="mb-1">{{ '::Attachments' | abpLocalization }}</label>
+                <div>
+                    <input class="form-control" type="file" id="task-attachments" (change)="onFileSelected($event)"
+                        multiple #fileInput />
+                </div>
+                <div *ngIf="selectedFiles.length > 0" class="mt-1">
+                    <ul class="list-group">
+                        <li *ngFor="let file of selectedFiles; let i = index"
+                            class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ file.name }}
+                            <button type="button" class="btn btn-danger btn-sm" (click)="removeFile(i)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary">{{ '::Save' | abpLocalization }}</button>
+            </div>
+
+        </form>
+    </div>
+</div>

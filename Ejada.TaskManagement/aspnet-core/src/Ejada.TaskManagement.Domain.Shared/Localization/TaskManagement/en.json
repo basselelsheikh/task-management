@@ -21,6 +21,9 @@
     "StartTask": "Start Task",
     "FinishTask": "Finish Task",
     "Confirmation:StartTask": "Are you sure you want to start this task?",
-    "Confirmation:FinishTask": "Are you sure you want to finish this task?"
+    "Confirmation:FinishTask": "Are you sure you want to finish this task?",
+    "CreateTask": "Create Task",
+    "AssignTo": "Assign to",
+    "AssignEmployeeLater": "Assign employee later"
   }
 }

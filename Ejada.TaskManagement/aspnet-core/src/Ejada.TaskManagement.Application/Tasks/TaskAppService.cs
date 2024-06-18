@@ -1,6 +1,7 @@
 ﻿using Ejada.TaskManagement.Permissions;
 using Ejada.TaskManagement.Tasks.Specifications;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +12,13 @@ using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.BlobStoring;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Identity;
 using Volo.Abp.Users;
 
 namespace Ejada.TaskManagement.Tasks
 {
     [Authorize(TaskManagementPermissions.Tasks.Default)]
-    public class TaskAppService(ITaskRepository taskRepository, ICurrentUser currentUser, IRepository<Attachment, Guid> attachmentRepository, IBlobContainer<AttachmentContainer> blobContainer) : TaskManagementAppService, ITaskAppService
+    public class TaskAppService(ITaskRepository taskRepository, ICurrentUser currentUser, IRepository<Attachment, Guid> attachmentRepository, IBlobContainer<AttachmentContainer> blobContainer, UserManager<Volo.Abp.Identity.IdentityUser> userManager) : TaskManagementAppService, ITaskAppService
     {
         [Authorize(TaskManagementPermissions.Tasks.ViewAssigned)]
         public async Task<PagedResultDto<TaskDto>> GetTasksAssignedToUserAsync(GetTaskListDto input)
@@ -81,6 +83,42 @@ namespace Ejada.TaskManagement.Tasks
             {
                 Content = blob
             };
+        }
+
+        public async Task<ListResultDto<EmployeeLookupDto>> GetEmployeeLookupAsync()
+        {
+            var employees = await userManager.GetUsersInRoleAsync("employee");
+            var employeeLookupDtos = employees.Select(u =>
+            new EmployeeLookupDto
+            {
+                Id = u.Id,
+                Name = string.IsNullOrEmpty(u.Name) ? u.UserName : u.Name + " " + u.Surname,
+            }).ToList();
+            return new ListResultDto<EmployeeLookupDto>(employeeLookupDtos);
+        }
+
+        [Authorize(TaskManagementPermissions.Tasks.Create)]
+        public async System.Threading.Tasks.Task CreateTaskAsync(CreateTaskDto input)
+        {
+            var task = new Task(GuidGenerator.Create(), input.Name, input.DueDate, input.Priority, (Guid)currentUser.Id!, input.Description);
+
+            if (input.EmployeeId != null)
+            {
+                task.AsssignTaskToEmployee((Guid)input.EmployeeId);
+            }
+
+            await taskRepository.InsertAsync(task);
+
+
+            if (input.Attachments != null && input.Attachments.Count != 0)
+            {
+                foreach (var attachment in input.Attachments)
+                {
+                    byte[] fileBytes = Convert.FromBase64String(attachment.Content);
+                    await blobContainer.SaveAsync(attachment.FileName, fileBytes);
+                }
+            }
+
         }
     }
 }

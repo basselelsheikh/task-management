@@ -14,5 +14,7 @@ namespace Ejada.TaskManagement.Tasks
         Task<TaskStatus> StartTask(Guid id);
         Task<TaskStatus> FinishTask(Guid id);
         Task<AttachmentDto> GetAttachments(Guid id);
+        Task<ListResultDto<EmployeeLookupDto>> GetEmployeeLookupAsync();
+        Task CreateTaskAsync(CreateTaskDto input);
     }
 }

@@ -20,13 +20,13 @@ namespace Ejada.TaskManagement
         {
             if (await taskRepository.GetCountAsync() <= 0)
             {
-                var task1 = new Task(guidGenerator.Create(), "Make Task Management application using abp", DateTime.Now.AddDays(2), TaskPriority.Medium, new Guid("57496BCE-A02D-8B60-F994-3A12F4EE424B"));
-                task1.AsssignTaskToEmployee(new Guid("9AB413D0-6A93-6CC0-F333-3A131447D089"));
-                var attachment = new Attachment(guidGenerator.Create(), task1.Id, "Projects.docx", "Projects.docx", 1, "docx");
-                var fileBytes = File.ReadAllBytes("D:\\abp-task-management\\Ejada.TaskManagement\\aspnet-core\\src\\Ejada.TaskManagement.Domain\\Projects.docx");
+                var task1 = new Task(guidGenerator.Create(), "Make Task Management application using abp", DateTime.Now.AddDays(2), TaskPriority.Medium, new Guid("4e9e6edc-7485-8566-ccb3-3a132a53b8e6"));
+                task1.AsssignTaskToEmployee(new Guid("c12227d9-4b37-3f5e-8d29-3a132a901fb2"));
+                var attachment = new Attachment(guidGenerator.Create(), task1.Id, "sample.pdf", "sample.pdf", 1, "docx");
+                var fileBytes = File.ReadAllBytes("C:\\sample.pdf");
                 await taskRepository.InsertAsync(task1, autoSave: true);
                 await attachmentRepository.InsertAsync(attachment, autoSave: true);
-                await blobContainer.SaveAsync("Projects.docx", fileBytes);
+                await blobContainer.SaveAsync("sample.pdf", fileBytes);
             }
         }
     }

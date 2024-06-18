@@ -5,7 +5,7 @@
     "Menu:Tasks": "المهام",
     "Welcome": "مرحباً",
     "TaskManagement:010001": "لا يمكن أن يكون تاريخ استحقاق المهمة في الماضي",
-    "Name": "الاسم",
+    "Name": "اسم المهمة",
     "Priority": "أولوية",
     "Status": "حالة",
     "Assignee": "المُكَلَّف",
@@ -22,6 +22,9 @@
     "StartTask": "بدء المهمة",
     "FinishTask": "إنهاء المهمة",
     "Confirmation:StartTask": "هل أنت متأكد أنك تريد بدء هذه المهمة؟",
-    "Confirmation:FinishTask": "هل أنت متأكد أنك تريد إنهاء هذه المهمة؟"
+    "Confirmation:FinishTask": "هل أنت متأكد أنك تريد إنهاء هذه المهمة؟",
+    "CreateTask": "إنشاء مهمة",
+    "AssignTo": "تعيين لـ",
+    "AssignEmployeeLater": "تعيين الموظف لاحقًا"
   }
 }

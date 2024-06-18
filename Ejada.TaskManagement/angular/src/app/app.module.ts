@@ -28,13 +28,13 @@ import { AccountLayoutModule } from '@abp/ng.theme.lepton-x/account';
     }),
     AbpOAuthModule.forRoot(),
     ThemeSharedModule.forRoot(),
-    
+
     AccountConfigModule.forRoot(),
     IdentityConfigModule.forRoot(),
     TenantManagementConfigModule.forRoot(),
     SettingManagementConfigModule.forRoot(),
-    
-    
+
+
     FeatureManagementModule.forRoot(),
     InternetConnectionStatusComponent,
     ThemeLeptonXModule.forRoot(),
@@ -45,4 +45,4 @@ import { AccountLayoutModule } from '@abp/ng.theme.lepton-x/account';
   providers: [APP_ROUTE_PROVIDER],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

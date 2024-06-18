@@ -28,7 +28,7 @@ namespace Ejada.TaskManagement.Tasks
 
             Id = id;
             Name = Check.NotNullOrWhiteSpace(name, nameof(name));
-            if (dueDate.ToUniversalTime() <= DateTime.UtcNow)
+            if (DateTime.Compare(dueDate.Date, DateTime.Now.Date) < 0)
             {
                 throw new BusinessException(TaskManagementDomainErrorCodes.TaskDueDateInThePast);
             }

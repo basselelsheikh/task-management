@@ -7,8 +7,8 @@
             <div class="text-end col col-md-6">
                 <div class="text-lg-end pt-2">
                     <!-- check id -->
-                    <button *abpPermission="'TaskManagement.Tasks.Create'" id="create" class="btn btn-primary"
-                        type="button" (click)="createTask()">
+                    <button [routerLink]="['create']" *abpPermission="'TaskManagement.Tasks.Create'" class="btn btn-primary"
+                        type="button">
                         <i class="fa fa-plus me-1"></i>
                         <span>{{ "::CreateTask" | abpLocalization }}</span>
                     </button>

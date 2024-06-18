@@ -1,7 +1,7 @@
-import type { AttachmentDto, GetTaskListDto, TaskDto } from './models';
+import type { AttachmentDto, CreateTaskDto, EmployeeLookupDto, GetTaskListDto, TaskDto } from './models';
 import type { TaskStatus } from './task-status.enum';
 import { RestService, Rest } from '@abp/ng.core';
-import type { PagedResultDto } from '@abp/ng.core';
+import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
 import { Injectable } from '@angular/core';
 
 @Injectable({
@@ -9,6 +9,15 @@ import { Injectable } from '@angular/core';
 })
 export class TaskService {
   apiName = 'Default';
+  
+
+  createTask = (input: CreateTaskDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, void>({
+      method: 'POST',
+      url: '/api/app/task/task',
+      body: input,
+    },
+    { apiName: this.apiName,...config });
   
 
   finishTaskById = (id: string, config?: Partial<Rest.Config>) =>
@@ -23,6 +32,14 @@ export class TaskService {
     this.restService.request<any, AttachmentDto>({
       method: 'GET',
       url: `/api/app/task/${id}/attachments`,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  getEmployeeLookup = (config?: Partial<Rest.Config>) =>
+    this.restService.request<any, ListResultDto<EmployeeLookupDto>>({
+      method: 'GET',
+      url: '/api/app/task/employee-lookup',
     },
     { apiName: this.apiName,...config });
   
