@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { TaskService, taskPriorityOptions, CreateTaskAttachmentDto, CreateTaskDto } from '@proxy/tasks';
+import { TaskService, taskPriorityOptions, CreateTaskDto } from '@proxy/tasks';
 
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 
@@ -55,55 +55,25 @@ export class CreateTaskComponent implements OnInit {
     this.fileInput.nativeElement.files = dataTransfer.files;
   }
 
-  fileToBase64(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result?.toString().split(',')[1];
-        if (base64String) {
-          resolve(base64String);
-        } else {
-          reject('Base64 string conversion failed');
-        }
-      };
-      reader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  }
-
-
   async save() {
     if (this.form.invalid) {
       return;
     }
 
-    const attachments: CreateTaskAttachmentDto[] = [];
+    const formData = new FormData();
+    formData.append('name', this.form.get('name').value);
+    formData.append('description', this.form.get('description')?.value);
+    formData.append('priority', this.form.get('priority')!.value);
+    formData.append('dueDate', new Date(this.form.get('dueDate').value).toISOString());
+    formData.append('employeeId', this.form.get('employeeId')?.value);
+
     for (const file of this.selectedFiles) {
-      try {
-        const base64String = await this.fileToBase64(file);
-        const fileDto: CreateTaskAttachmentDto = {
-          fileName: file.name,
-          content: base64String
-        };
-        attachments.push(fileDto);
-      } catch (error) {
-        console.error('File conversion failed', error);
-      }
+      formData.append('attachments', file, file.name);
     }
 
-    const taskDto: CreateTaskDto = {
-      ...this.form.value,
-      attachments: attachments
-    };
-
-    this.taskService.createTask(taskDto).subscribe(() => {
+    this.taskService.createTask(formData).subscribe(() => {
       this.form.reset();
     });
 
   }
-
-
-
 }

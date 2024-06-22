@@ -40,7 +40,7 @@
             </ngx-datatable-column>
             <ngx-datatable-column [name]="'::Creator' | abpLocalization" prop="creatorUserName" [sortable]="false">
             </ngx-datatable-column>
-            <ngx-datatable-column  *abpPermission="'TaskManagement.Tasks.ViewAll'" [name]="'::Assignee' | abpLocalization" prop="">
+            <ngx-datatable-column  *abpPermission="'TaskManagement.Tasks.ViewAll'" [name]="'::Assignee' | abpLocalization" prop="assigneeUserName" [sortable]="false">
             </ngx-datatable-column>
         </ngx-datatable>
     </div>

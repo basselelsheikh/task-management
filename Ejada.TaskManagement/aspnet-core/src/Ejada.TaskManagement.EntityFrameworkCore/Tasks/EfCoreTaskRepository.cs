@@ -25,7 +25,9 @@ namespace Ejada.TaskManagement.Tasks
             var taskDbSet = await GetDbSetAsync();
             var userDbSet = (await GetDbContextAsync()).Users;
 
-            var result = taskDbSet.Where(t => t.Id == id)
+            var result = taskDbSet
+                .Where(t => t.Id == id)
+                .Include(t => t.Attachments)
                 .Select(t => new EmployeeTaskViewModel
                 {
                     Task = t,
@@ -34,18 +36,24 @@ namespace Ejada.TaskManagement.Tasks
                 }).First();
             return result;
         }
-        public async Task<(List<EmployeeTaskViewModel> result, int count)> GetTasksAsync(ISpecification<Task> spec, int skipCount, int maxResultCount, string sorting, string? filter = null)
+        public async Task<(List<EmployeeTaskViewModel> result, int count)> GetTasksAsync(int skipCount, int maxResultCount, string sorting, string? filter = null, ISpecification<Task>? spec = null)
         {
             var taskDbSet = await GetDbSetAsync();
             var userDbSet = (await GetDbContextAsync()).Users;
 
-            var query = taskDbSet
-                .Where(spec.ToExpression())
-                .WhereIf(
-                    !filter.IsNullOrEmpty(),
-                    task => task.Name.Contains(filter!, StringComparison.OrdinalIgnoreCase) ||
-                    (task.Description != null && task.Description.Contains(filter!, StringComparison.OrdinalIgnoreCase))
-                    );
+            IQueryable<Task> query = taskDbSet;
+
+            if (spec != null)
+            {
+                query = query.Where(spec.ToExpression());
+            }
+
+            query = taskDbSet
+               .WhereIf(
+                   !filter.IsNullOrEmpty(),
+                   task => task.Name.Contains(filter!, StringComparison.OrdinalIgnoreCase) ||
+                   (task.Description != null && task.Description.Contains(filter!, StringComparison.OrdinalIgnoreCase))
+                   );
 
             var count = await query.CountAsync();
 
@@ -56,10 +64,15 @@ namespace Ejada.TaskManagement.Tasks
                 .Join(userDbSet,
                     t => t.CreatorUserId,
                     u => u.Id,
-                    (task, user) => new EmployeeTaskViewModel
+                    (task, user) => new { Task = task, CreatorUser = user })
+                .Join(userDbSet,
+                    joined => joined.Task.AssigneeUserId,
+                    u => u.Id,
+                    (joined, assigneeUser) => new EmployeeTaskViewModel
                     {
-                        Task = task,
-                        CreatorUserName = string.IsNullOrEmpty(user.Name) ? user.UserName : user.Name + " " + user.Surname,
+                        Task = joined.Task,
+                        CreatorUserName = string.IsNullOrEmpty(joined.CreatorUser.Name) ? joined.CreatorUser.UserName : joined.CreatorUser.Name + " " + joined.CreatorUser.Surname,
+                        AssigneeUserName = assigneeUser == null ? null : string.IsNullOrEmpty(assigneeUser.Name) ? assigneeUser.UserName : assigneeUser.Name + " " + assigneeUser.Surname
                     })
                 .ToListAsync();
 

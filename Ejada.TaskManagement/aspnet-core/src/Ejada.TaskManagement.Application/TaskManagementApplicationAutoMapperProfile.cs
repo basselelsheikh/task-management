@@ -12,5 +12,6 @@ public class TaskManagementApplicationAutoMapperProfile : Profile
          * into multiple profile classes for a better organization. */
 
         CreateMap<Task, TaskDto>();
+        CreateMap<Attachment, TaskDto.AttachmentDto>();
     }
 }

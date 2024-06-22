@@ -16,5 +16,12 @@ namespace Ejada.TaskManagement.Tasks
         public string CreatorUserName { get; set; }
         public Guid AssigneeUserId { get; set; }
         public string? AssigneeUserName { get; set; }
+        public List<AttachmentDto> Attachments { get; set; } = [];
+
+        public class AttachmentDto : EntityDto<Guid>
+        {
+            public string BlobName { get; set; }
+        }
+
     }
 }

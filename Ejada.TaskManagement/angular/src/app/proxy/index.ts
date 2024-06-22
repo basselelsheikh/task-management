@@ -1,2 +1,3 @@
 import * as Tasks from './tasks';
-export { Tasks };
+import * as Volo from './volo';
+export { Tasks, Volo };

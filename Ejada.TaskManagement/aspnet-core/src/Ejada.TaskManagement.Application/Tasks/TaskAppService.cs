@@ -11,6 +11,7 @@ using Volo.Abp;
 using Volo.Abp.Application.Dtos;
 using Volo.Abp.Application.Services;
 using Volo.Abp.BlobStoring;
+using Volo.Abp.Content;
 using Volo.Abp.Domain.Repositories;
 using Volo.Abp.Identity;
 using Volo.Abp.Users;
@@ -29,7 +30,36 @@ namespace Ejada.TaskManagement.Tasks
             }
 
             var (tasks, count) = await taskRepository.GetTasksAsync(
-                new AssignedTasksToEmployeeSpecification((Guid)currentUser.Id!),
+                input.SkipCount,
+                input.MaxResultCount,
+                input.Sorting,
+                input.Filter,
+                new AssignedTasksToEmployeeSpecification((Guid)currentUser.Id!)
+                );
+
+            var taskDtos = tasks.Select(t =>
+            {
+                var taskDto = ObjectMapper.Map<Task, TaskDto>(t.Task);
+                taskDto.CreatorUserName = t.CreatorUserName;
+                return taskDto;
+
+            }).ToList();
+
+            return new PagedResultDto<TaskDto>(
+                count,
+                taskDtos
+            );
+        }
+
+        [Authorize(TaskManagementPermissions.Tasks.ViewAll)]
+        public async Task<PagedResultDto<TaskDto>> GetAllTasks(GetTaskListDto input)
+        {
+            if (input.Sorting.IsNullOrWhiteSpace())
+            {
+                input.Sorting = nameof(Task.DueDate);
+            }
+
+            var (tasks, count) = await taskRepository.GetTasksAsync(
                 input.SkipCount,
                 input.MaxResultCount,
                 input.Sorting,
@@ -40,6 +70,7 @@ namespace Ejada.TaskManagement.Tasks
             {
                 var taskDto = ObjectMapper.Map<Task, TaskDto>(t.Task);
                 taskDto.CreatorUserName = t.CreatorUserName;
+                taskDto.AssigneeUserName = t.AssigneeUserName;
                 return taskDto;
 
             }).ToList();
@@ -75,16 +106,6 @@ namespace Ejada.TaskManagement.Tasks
             return task.Status;
         }
 
-        public async Task<AttachmentDto> GetAttachments(Guid id)
-        {
-            var at = await attachmentRepository.GetAsync(a => a.TaskId == id);
-            var blob = await blobContainer.GetAllBytesAsync(at.FileName);
-            return new AttachmentDto
-            {
-                Content = blob
-            };
-        }
-
         public async Task<ListResultDto<EmployeeLookupDto>> GetEmployeeLookupAsync()
         {
             var employees = await userManager.GetUsersInRoleAsync("employee");
@@ -109,16 +130,25 @@ namespace Ejada.TaskManagement.Tasks
 
             await taskRepository.InsertAsync(task);
 
-
-            if (input.Attachments != null && input.Attachments.Count != 0)
+            if (input.Attachments != null && input.Attachments.Any())
             {
+                
                 foreach (var attachment in input.Attachments)
                 {
-                    byte[] fileBytes = Convert.FromBase64String(attachment.Content);
-                    await blobContainer.SaveAsync(attachment.FileName, fileBytes);
+                    var attachmentMetaData = new Attachment(GuidGenerator.Create(), task.Id, attachment.FileName!);
+                    await blobContainer.SaveAsync(attachment.FileName!, attachment.GetStream(), true);
+                    await attachmentRepository.InsertAsync(attachmentMetaData);
                 }
             }
 
+        }
+
+        public async Task<IRemoteStreamContent> DownloadAttachment(string blobName)
+        {
+            var stream = await blobContainer.GetAsync(blobName);
+            var remoteStream = new RemoteStreamContent(stream, blobName, "application/octet-stream");
+
+            return remoteStream;
         }
     }
 }

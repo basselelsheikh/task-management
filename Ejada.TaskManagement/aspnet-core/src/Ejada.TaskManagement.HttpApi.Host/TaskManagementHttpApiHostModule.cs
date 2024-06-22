@@ -29,6 +29,7 @@ using Volo.Abp.Security.Claims;
 using Volo.Abp.Swashbuckle;
 using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.VirtualFileSystem;
+using Ejada.TaskManagement.Tasks;
 
 namespace Ejada.TaskManagement;
 
@@ -136,6 +137,7 @@ public class TaskManagementHttpApiHostModule : AbpModule
         Configure<AbpAspNetCoreMvcOptions>(options =>
         {
             options.ConventionalControllers.Create(typeof(TaskManagementApplicationModule).Assembly);
+            options.ConventionalControllers.FormBodyBindingIgnoredTypes.Add(typeof(CreateTaskDto));
         });
     }
 

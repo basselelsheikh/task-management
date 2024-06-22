@@ -1,16 +1,7 @@
 import type { TaskPriority } from './task-priority.enum';
+import type { IRemoteStreamContent } from '../volo/abp/content/models';
 import type { EntityDto, PagedAndSortedResultRequestDto } from '@abp/ng.core';
 import type { TaskStatus } from './task-status.enum';
-
-export interface AttachmentDto {
-  fileName?: string;
-  content: string;
-}
-
-export interface CreateTaskAttachmentDto {
-  fileName?: string;
-  content?: string;
-}
 
 export interface CreateTaskDto {
   name: string;
@@ -18,7 +9,7 @@ export interface CreateTaskDto {
   priority: TaskPriority;
   dueDate: string;
   employeeId?: string;
-  attachments: CreateTaskAttachmentDto[];
+  attachments: IRemoteStreamContent[];
 }
 
 export interface EmployeeLookupDto extends EntityDto<string> {
@@ -39,4 +30,9 @@ export interface TaskDto extends EntityDto<string> {
   creatorUserName?: string;
   assigneeUserId?: string;
   assigneeUserName?: string;
+  attachments: TaskDto_AttachmentDto[];
+}
+
+export interface TaskDto_AttachmentDto extends EntityDto<string> {
+  blobName?: string;
 }

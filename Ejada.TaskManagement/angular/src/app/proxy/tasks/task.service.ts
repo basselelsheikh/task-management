@@ -1,4 +1,4 @@
-import type { AttachmentDto, CreateTaskDto, EmployeeLookupDto, GetTaskListDto, TaskDto } from './models';
+import type { CreateTaskDto, EmployeeLookupDto, GetTaskListDto, TaskDto } from './models';
 import type { TaskStatus } from './task-status.enum';
 import { RestService, Rest } from '@abp/ng.core';
 import type { ListResultDto, PagedResultDto } from '@abp/ng.core';
@@ -11,11 +11,22 @@ export class TaskService {
   apiName = 'Default';
   
 
-  createTask = (input: CreateTaskDto, config?: Partial<Rest.Config>) =>
+  createTask = (input: any, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>({
       method: 'POST',
       url: '/api/app/task/task',
-      body: input,
+      params: { name: input.name, description: input.description, priority: input.priority, dueDate: input.dueDate, employeeId: input.employeeId },
+      body: input.attachments,
+    },
+    { apiName: this.apiName,...config });
+  
+
+  downloadAttachmentByBlobName = (blobName: string, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, Blob>({
+      method: 'POST',
+      responseType: 'blob',
+      url: '/api/app/task/download-attachment',
+      params: { blobName },
     },
     { apiName: this.apiName,...config });
   
@@ -28,10 +39,11 @@ export class TaskService {
     { apiName: this.apiName,...config });
   
 
-  getAttachmentsById = (id: string, config?: Partial<Rest.Config>) =>
-    this.restService.request<any, AttachmentDto>({
+  getAllTasksByInput = (input: GetTaskListDto, config?: Partial<Rest.Config>) =>
+    this.restService.request<any, PagedResultDto<TaskDto>>({
       method: 'GET',
-      url: `/api/app/task/${id}/attachments`,
+      url: '/api/app/task/tasks',
+      params: { filter: input.filter, sorting: input.sorting, skipCount: input.skipCount, maxResultCount: input.maxResultCount },
     },
     { apiName: this.apiName,...config });
   

@@ -11,11 +11,11 @@ namespace Ejada.TaskManagement.Tasks
     public interface ITaskRepository : IBasicRepository<Task, Guid>
     {
         Task<(List<EmployeeTaskViewModel> result, int count)> GetTasksAsync(
-            ISpecification<Task> spec,
             int skipCount,
             int maxResultCount,
             string sorting,
-            string? filter = null);
+            string? filter = null,
+            ISpecification<Task>? spec = null);
 
         Task<EmployeeTaskViewModel> GetTaskWithDetails(Guid id);
     }

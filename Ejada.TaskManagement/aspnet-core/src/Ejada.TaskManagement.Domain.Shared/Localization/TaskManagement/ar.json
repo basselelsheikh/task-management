@@ -25,6 +25,7 @@
     "Confirmation:FinishTask": "هل أنت متأكد أنك تريد إنهاء هذه المهمة؟",
     "CreateTask": "إنشاء مهمة",
     "AssignTo": "تعيين لـ",
-    "AssignEmployeeLater": "تعيين الموظف لاحقًا"
+    "AssignEmployeeLater": "تعيين الموظف لاحقًا",
+    "Attachments": "المرفقات"
   }
 }
