@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TaskService, taskPriorityOptions, CreateTaskDto } from '@proxy/tasks';
 
 import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
+import { ToasterService } from '@abp/ng.theme.shared';
 
 @Component({
   selector: 'app-create-task',
@@ -12,12 +13,13 @@ import { NgbDate, NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
 export class CreateTaskComponent implements OnInit {
   @ViewChild('fileInput') fileInput: any;
 
+  isLoading = false;
   form: FormGroup
   selectedFiles: File[] = [];
   employees = [];
   taskPriorities = taskPriorityOptions
   today: NgbDate;
-  constructor(private fb: FormBuilder, private calendar: NgbCalendar, private taskService: TaskService) { }
+  constructor(private fb: FormBuilder, private toaster: ToasterService, private calendar: NgbCalendar, private taskService: TaskService) { }
   ngOnInit(): void {
     this.buildForm();
     this.today = this.calendar.getToday();
@@ -59,20 +61,30 @@ export class CreateTaskComponent implements OnInit {
     if (this.form.invalid) {
       return;
     }
+    this.isLoading = true;
 
     const formData = new FormData();
-    formData.append('name', this.form.get('name').value);
-    formData.append('description', this.form.get('description')?.value);
-    formData.append('priority', this.form.get('priority')!.value);
-    formData.append('dueDate', new Date(this.form.get('dueDate').value).toISOString());
-    formData.append('employeeId', this.form.get('employeeId')?.value);
 
     for (const file of this.selectedFiles) {
       formData.append('attachments', file, file.name);
     }
 
-    this.taskService.createTask(formData).subscribe(() => {
+    const createTaskDto: CreateTaskDto = {
+      ...this.form.value,
+      attachments: formData
+    }
+
+    createTaskDto.dueDate = new Date(this.form.value.dueDate).toISOString().split('T')[0];
+
+    this.taskService.createTask(createTaskDto).subscribe(() => {
       this.form.reset();
+      this.selectedFiles = [];
+      const dataTransfer = new DataTransfer();
+      this.fileInput.nativeElement.files = dataTransfer.files;
+      this.isLoading = false;
+      this.toaster.success('::TaskCreatedSuccessfully', '::Success');
+    }, error => {
+      this.isLoading = false;
     });
 
   }

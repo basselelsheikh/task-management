@@ -25,7 +25,7 @@ namespace Ejada.TaskManagement.Tasks
         public async Task<PagedResultDto<TaskDto>> GetTasksAssignedToUserAsync(GetTaskListDto input)
         {
             if (input.Sorting.IsNullOrWhiteSpace())
-            {
+            {       
                 input.Sorting = nameof(Task.DueDate);
             }
 

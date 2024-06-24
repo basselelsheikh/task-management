@@ -25,6 +25,8 @@
     "CreateTask": "Create Task",
     "AssignTo": "Assign to",
     "AssignEmployeeLater": "Assign employee later",
-    "Attachments": "Attachments"
+    "Attachments": "Attachments",
+    "Success": "Success",
+    "TaskCreatedSuccessfully": "Task has been created successfully!"
   }
 }

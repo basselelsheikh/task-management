@@ -26,6 +26,8 @@
     "CreateTask": "إنشاء مهمة",
     "AssignTo": "تعيين لـ",
     "AssignEmployeeLater": "تعيين الموظف لاحقًا",
-    "Attachments": "المرفقات"
+    "Attachments": "المرفقات",
+    "Success": "نجاح",
+    "TaskCreatedSuccessfully": "تم إنشاء المهمة بنجاح"
   }
 }

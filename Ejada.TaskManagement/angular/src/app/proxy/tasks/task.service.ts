@@ -11,7 +11,7 @@ export class TaskService {
   apiName = 'Default';
   
 
-  createTask = (input: any, config?: Partial<Rest.Config>) =>
+  createTask = (input: CreateTaskDto, config?: Partial<Rest.Config>) =>
     this.restService.request<any, void>({
       method: 'POST',
       url: '/api/app/task/task',

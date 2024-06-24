@@ -9,7 +9,7 @@ export interface CreateTaskDto {
   priority: TaskPriority;
   dueDate: string;
   employeeId?: string;
-  attachments: IRemoteStreamContent[];
+  attachments: FormData;
 }
 
 export interface EmployeeLookupDto extends EntityDto<string> {

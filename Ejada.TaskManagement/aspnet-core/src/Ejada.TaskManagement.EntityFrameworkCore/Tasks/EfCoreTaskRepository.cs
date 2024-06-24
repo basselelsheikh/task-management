@@ -48,7 +48,7 @@ namespace Ejada.TaskManagement.Tasks
                 query = query.Where(spec.ToExpression());
             }
 
-            query = taskDbSet
+            query = query
                .WhereIf(
                    !filter.IsNullOrEmpty(),
                    task => task.Name.Contains(filter!, StringComparison.OrdinalIgnoreCase) ||
@@ -57,24 +57,30 @@ namespace Ejada.TaskManagement.Tasks
 
             var count = await query.CountAsync();
 
-            var result = await query
-                .OrderBy(sorting)
-                .Skip(skipCount)
-                .Take(maxResultCount)
-                .Join(userDbSet,
-                    t => t.CreatorUserId,
-                    u => u.Id,
-                    (task, user) => new { Task = task, CreatorUser = user })
-                .Join(userDbSet,
-                    joined => joined.Task.AssigneeUserId,
-                    u => u.Id,
-                    (joined, assigneeUser) => new EmployeeTaskViewModel
+            var tasksWithCreators = await query
+            .OrderBy(sorting)
+            .Skip(skipCount)
+            .Take(maxResultCount)
+            .Join(userDbSet,
+                task => task.CreatorUserId,
+                user => user.Id,
+                (task, creatorUser) => new { Task = task, CreatorUser = creatorUser })
+            .ToListAsync();
+
+            var result = tasksWithCreators
+                .GroupJoin(userDbSet,
+                    taskWithCreator => taskWithCreator.Task.AssigneeUserId,
+                    assigneeUser => assigneeUser.Id,
+                    (taskWithCreator, assigneeUsers) => new { taskWithCreator.Task, taskWithCreator.CreatorUser, AssigneeUsers = assigneeUsers.DefaultIfEmpty() })
+                .SelectMany(
+                    taskWithCreatorAndAssignees => taskWithCreatorAndAssignees.AssigneeUsers.Select(assigneeUser => new EmployeeTaskViewModel
                     {
-                        Task = joined.Task,
-                        CreatorUserName = string.IsNullOrEmpty(joined.CreatorUser.Name) ? joined.CreatorUser.UserName : joined.CreatorUser.Name + " " + joined.CreatorUser.Surname,
-                        AssigneeUserName = assigneeUser == null ? null : string.IsNullOrEmpty(assigneeUser.Name) ? assigneeUser.UserName : assigneeUser.Name + " " + assigneeUser.Surname
+                        Task = taskWithCreatorAndAssignees.Task,
+                        CreatorUserName = string.IsNullOrEmpty(taskWithCreatorAndAssignees.CreatorUser.Name) ? taskWithCreatorAndAssignees.CreatorUser.UserName : taskWithCreatorAndAssignees.CreatorUser.Name + " " + taskWithCreatorAndAssignees.CreatorUser.Surname,
+                        AssigneeUserName = assigneeUser == null ? null : (string.IsNullOrEmpty(assigneeUser.Name) ? assigneeUser.UserName : assigneeUser.Name + " " + assigneeUser.Surname)
                     })
-                .ToListAsync();
+                )
+                .ToList();
 
             return (result, count);
 

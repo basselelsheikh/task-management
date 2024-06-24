@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Net.Mail;
 using System.Text;
 using Volo.Abp.Content;
 
@@ -16,7 +17,9 @@ namespace Ejada.TaskManagement.Tasks
         [Required]
         public DateTime DueDate { get; set; }
         public Guid? EmployeeId { get; set; }
-        public IEnumerable<IRemoteStreamContent> Attachments { get; set; }
+        public IEnumerable<IRemoteStreamContent>? Attachments { get; set; }
+
+
     }
 
 }
